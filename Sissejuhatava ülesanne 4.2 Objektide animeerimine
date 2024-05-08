@@ -1,0 +1,60 @@
+import pygame  # Pygame'i impordib, et kasutada mängu loomiseks vajalikke funktsioone
+import sys  # sys mooduli impordib, et programm saaks korrektselt lõpetada
+import random  # random mooduli impordib, et luua juhuslikke koordinaate
+
+pygame.init()  # Pygame'i initsialiseerimine, et alustada mängukeskkonna seadistamist
+
+# Värvid
+red = [255, 0, 0]  # Punase värvi RGB-väärtus
+green = [0, 255, 0]  # Rohelise värvi RGB-väärtus
+blue = [0, 0, 255]  # Sinise värvi RGB-väärtus
+pink = [255, 153, 255]  # Roosa värvi RGB-väärtus
+lGreen = [153, 255, 153]  # Hele rohelise värvi RGB-väärtus
+lBlue = [153, 204, 255]  # Hele sinise värvi RGB-väärtus
+
+# Ekraani seaded
+screenX = 640  # Ekraani laius pikslites
+screenY = 480  # Ekraani kõrgus pikslites
+screen = pygame.display.set_mode([screenX, screenY])  # Ekraani loomine antud mõõtmetega
+pygame.display.set_caption("Animeerimine")  # Määrab akna pealkirja
+screen.fill(lBlue)  # Täidab ekraani antud värviga
+
+clock = pygame.time.Clock()  # Loob kellamehhanismi, et kontrollida mängu FPS-i (kaadrit sekundis)
+
+# Kiirus ja asukoht
+speedX, speedY = 3, 3  # Määrab ruudu algse kiiruse pikslites kaadrites
+
+# Koordinaatide loomine ja lisamine massiivi
+coords = []  # Loob tühja massiivi koordinaatide salvestamiseks
+for i in range(10):  # Loob 10 juhuslikku paari koordinaate
+    posX = random.randint(1, screenX)  # Genereerib juhusliku X-koordinaadi
+    posY = random.randint(1, screenY)  # Genereerib juhusliku Y-koordinaadi
+    coords.append([posX, posY])  # Lisab koordinaadid massiivi
+
+gameover = False  # Mängu lõppu määrav lipp, algväärtuseta
+while not gameover:  # Mängutsükkel, mis kestab seni kuni gameover muutuja väärtus on False
+    # FPS
+    clock.tick(120)  # Reguleerib mängu kiirust, piirab FPS-i maksimaalselt 120-ni
+
+    # Mängu sulgemine ristist
+    for event in pygame.event.get():  # Sündmuste käsitlemine
+        if event.type == pygame.QUIT:  # Kui kasutaja sulgeb mänguakna
+            gameover = True  # Määrab gameover muutuja väärtuseks True, et lõpetada mängutsükkel
+            break  # Lisame selle rea, et kohe väljuda sündmusekäsitlemise tsüklist
+
+    # Loendist koordinaadid
+    for i in range(len(coords)):  # Itereerib läbi koordinaatide massiivi
+        pygame.draw.rect(screen, red, [coords[i][0], coords[i][1], 20, 20])  # Joonistab ruudu ekraanile
+        coords[i][1] +=  1  # Muudab Y-koordinaati vastavalt kiirusele
+        
+        # Kui jõuab alla, siis muudame ruudu alguspunkti
+        if coords[i][1] > screenY:  # Kontrollib, kas ruut jõuab ekraani alla
+            coords[i][1] = random.randint(-40, -10)  # Genereerib juhusliku Y-koordinaadi
+            coords[i][0] = random.randint(0, screenX)  # Genereerib juhusliku X-koordinaadi
+    
+    pygame.display.flip()  # Uuendab ekraani, kuvades viimased muudatused
+    screen.fill(lBlue)  # Täidab ekraani taustavärviga enne järgmist kaadrit
+
+pygame.quit()  # Lõpetab Pygame'i kasutamise
+sys.exit()  # Lõpetab programmi töö
+
